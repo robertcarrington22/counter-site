@@ -206,14 +206,16 @@ footer p{max-width:80ch}
 
     <div class="receipt-wrap" id="demo">
       <div class="tabs" role="tablist" aria-label="Example bills">
-        <button role="tab" aria-selected="true" data-bill="er">ER bill</button>
+        <button role="tab" aria-selected="true" data-bill="er">ER visit</button>
+        <button role="tab" aria-selected="false" data-bill="lab">Hospital lab</button>
+        <button role="tab" aria-selected="false" data-bill="fee">Facility fee</button>
         <button role="tab" aria-selected="false" data-bill="roof">Roof quote</button>
         <button role="tab" aria-selected="false" data-bill="brakes">Brake estimate</button>
-        <button role="tab" aria-selected="false" data-bill="hvac">HVAC quote (fair)</button>
+        <button role="tab" aria-selected="false" data-bill="hvac">HVAC (fair)</button>
       </div>
       <div class="receipt" id="receipt" aria-live="polite">
         <div class="stamp" id="stamp">Padded<small id="stampSub">+$1,870</small></div>
-        <div class="rh"><div><b id="rTitle">Regional Medical Center</b><span id="rSub">Emergency dept · DOS 08/14</span></div><div style="text-align:right"><b>VERDICT</b><span id="rDate">Sept 2026</span></div></div>
+        <div class="rh"><div><b id="rTitle">Hospital emergency department, Nevada</b><span id="rSub">Child, 3 · doll shoe removed from nostril</span></div><div style="text-align:right"><b>VERDICT</b><span id="rDate">Sept 2026</span></div></div>
         <div class="lines" id="lines"></div>
         <div class="totals">
           <div><span>Billed</span><span class="tabnum" id="tBilled"></span></div>
@@ -221,7 +223,8 @@ footer p{max-width:80ch}
           <div class="save"><span id="sLabel">Padding found</span><span class="tabnum" id="tSave"></span></div>
         </div>
       </div>
-      <p class="receipt-foot">Illustrative examples. Your verdict comes with the exact lines, the reason, and what we'd do about it.</p>
+      <p class="receipt-foot" id="rSource">Based on a case reported by KFF Health News and NPR (2019). Names removed; figures as reported.</p>
+      <p class="receipt-foot">Examples reconstruct reported cases and published price studies. Your verdict comes with the exact lines, the reason, and what to do about it.</p>
     </div>
   </div>
 </div>
@@ -288,7 +291,9 @@ footer p{max-width:80ch}
 
 <section id="upload"><div class="wrap">
   <div class="head"><span class="eyebrow">Don't want to text?</span><h2>Upload it here instead.</h2><p>Same verdict, same ten minutes. We'll reply by text or email, whichever you give us.</p></div>
-  <form class="upload" id="uploadForm" novalidate>
+  <form class="upload" id="uploadForm" name="bill-upload" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" novalidate>
+    <input type="hidden" name="form-name" value="bill-upload">
+    <p hidden><label>Leave this empty <input name="bot-field"></label></p>
     <label class="drop" id="drop" for="file"><span id="dropText">Tap to choose a photo or PDF, or drag it here</span><input type="file" id="file" name="bill" accept="image/*,.pdf" multiple></label>
     <label>Phone or email for the verdict<input type="text" name="contact" id="contact" autocomplete="tel email" placeholder="(555) 555-5555 or you@example.com" required></label>
     <label>Anything we should know? <span style="font-weight:400;color:var(--muted)">(optional)</span><textarea name="note" placeholder="Already paid part of it. Insurance said it was in-network. The contractor wants an answer by Friday."></textarea></label>
@@ -328,7 +333,7 @@ footer p{max-width:80ch}
 const PHONE_DISPLAY = "(555) 555-0199";   // shown on buttons
 const PHONE_E164    = "+15555550199";     // used in the sms: link
 const SMS_BODY      = "Here's my bill:";  // prefilled text
-const FORM_ENDPOINT = "";                 // e.g. "https://formspree.io/f/xxxx" — leave empty until you have one
+const FORM_ENDPOINT = "";                 // leave empty on Netlify: the form posts to Netlify Forms automatically. Set a Formspree/Tally URL only if hosting elsewhere.
 
 /* REAL RESULTS: add one object per closed fight. The section stays hidden while this is empty.
    Only add cases the customer agreed to share. `quote` and `who` are optional.
@@ -349,35 +354,53 @@ const smsHref = "sms:" + PHONE_E164 + "?&body=" + encodeURIComponent(SMS_BODY);
 
 /* ---- hero demo ---- */
 const BILLS = {
-  er: { title:"Regional Medical Center", sub:"Emergency dept · DOS 08/14", fair:false,
+  er: { title:"Hospital emergency department, Nevada", sub:"Child, 3 · doll shoe removed from nostril", fair:false,
+    src:"Based on a case reported by KFF Health News and NPR (2019). Names removed; figures as reported.",
     lines:[
-      ["ER visit, level 4 (99284)", 1180, "ok:Normal for chest-pain workup"],
-      ["EKG, 12-lead (93010)", 210, null],
-      ["CT chest w/ contrast (71260)", 1240, null],
-      ["CT chest w/ contrast (71260)", 1240, "flag:Same study billed twice"],
-      ["IV push, initial (96374)", 340, "flag:Billed at higher-tier code; likely $220 too much"],
-      ["Facility fee, outpatient", 410, "flag:In-network visit; shouldn't apply"],
-      ["Troponin, x2", 180, null],
-    ], billed:4800, should:2930, save:"+$1,870" },
-  roof: { title:"Ridgeline Roofing LLC", sub:"1,900 sq ft ranch · architectural shingle", fair:false,
+      ["ER visit, hospital facility charge", 1143, "flag:Level billed for a 5-minute forceps removal; ask for coding review"],
+      ["Removal of foreign body, nose (30300)", 589, "flag:Medicare pays about $101 for this; hospital's own reported cost under $48"],
+      ["ER physician fee (separate bill)", 927, "flag:Physician group cut this 50% for payment within 20 days"],
+      ["Urgent care visit earlier that day", 0, "ok:Billed separately; not disputed"],
+    ], billed:2659, should:1500, save:"+$1,150" },
+  lab: { title:"Hospital-owned lab, Texas", sub:"Routine prenatal bloodwork · first OB visit", fair:false,
+    src:"Based on a case reported by KFF Health News (2023). The hospital zeroed the bill after it was challenged.",
     lines:[
-      ["Tear-off and disposal, 1 layer", 2400, null],
-      ["Architectural shingles, 24 sq", 7900, null],
-      ["Ice & water shield, full deck", 1950, "flag:Code needs eaves/valleys only; $1,200 upsell"],
-      ["Decking replacement, up to 10 sheets", 1800, "flag:No per-sheet rate stated; padded after the fact"],
-      ["Ridge vent and flashing", 1150, null],
-      ["Labor, 2 days", 4900, "flag:High for a low-pitch ranch; local range $3,200 to $3,800"],
+      ["Complete blood count (85025)", 180, "flag:Independent labs charge $10 to $30"],
+      ["Comprehensive metabolic panel (80053)", 410, "flag:Independent labs charge $15 to $50"],
+      ["Prenatal panel: blood type, antibody, rubella, hepatitis B, HIV, syphilis", 3960, "flag:Hospital lab rate; same panel is a few hundred dollars elsewhere"],
+      ["Urinalysis and culture", 720, "flag:Priced at hospital chargemaster"],
+      ["Pathology and handling fees", 4250, "flag:Vague fees; itemization requested"],
+    ], billed:9520, should:300, save:"+$2,390 owed" },
+  fee: { title:"Hospital outpatient clinic", sub:"Arthritis injections · same doctor, office moved one floor up", fair:false,
+    src:"Based on a case reported by KFF Health News (2024). Patient's share went from about $30 to $355 for the same procedure.",
+    lines:[
+      ["Clinic visit, physician", 82, "ok:Same as before the move"],
+      ["Pharmacy: injection drug", 50, null],
+      ["Facility fee, listed as \"operating room services\"", 1262, "flag:Injection given in an exam room; \"hospital-based\" designation added after the office moved"],
+    ], billed:1394, should:132, save:"+$1,262" },
+  roof: { title:"Roofing contractor, high bid", sub:"Asphalt shingle replacement · same house, five bids", fair:false,
+    src:"Anchored to Consumers' Checkbook undercover shopping: bids for one identical reroofing job ranged from $11,954 to $21,156.",
+    lines:[
+      ["Tear-off and disposal, 1 layer", 2600, null],
+      ["Architectural shingles, materials", 7400, "flag:Lowest bid for the same shingle line was $5,100"],
+      ["Ice & water shield, full deck", 2100, "flag:Code needs eaves and valleys only; $1,300 upsell"],
+      ["Decking replacement, \"up to 10 sheets included\"", 1900, "flag:No per-sheet rate stated; padded after the fact"],
+      ["Ridge vent, flashing, drip edge", 1256, null],
+      ["Labor", 5900, "flag:Competing bids had the same crew and days at $3,400 to $3,900"],
       ["Permit", 0, "flag:Not listed. Ask."],
-    ], billed:21400, should:16200, save:"+$5,200" },
-  brakes: { title:"Metro Toyota Service", sub:"2019 RAV4 · 61,000 mi", fair:false,
+    ], billed:21156, should:14600, save:"+$6,556" },
+  brakes: { title:"Dealership service department", sub:"Mid-size SUV, 61,000 miles · \"complete brake overhaul\"", fair:false,
+    src:"A pattern reported repeatedly in 2025 and 2026: dealer brake estimates in the thousands where an independent inspection found pads and rotors with most of their life left.",
     lines:[
-      ["Front pads and rotors, OEM", 310, null],
-      ["Rear pads and rotors, OEM", 290, null],
-      ["Labor, 4.5 hrs @ $180", 810, "flag:Book time is 2.0 to 2.5 hrs"],
-      ["Brake fluid flush", 189, "flag:Not requested; not due"],
-      ["Shop supplies", 42, null],
-    ], billed:1641, should:1010, save:"+$631" },
-  hvac: { title:"Northside Heating & Air", sub:"80k BTU furnace + 3-ton AC", fair:true,
+      ["Front pads and rotors, OEM", 620, "flag:Measured at 7 mm; not due"],
+      ["Rear pads and rotors, OEM", 580, "flag:Measured at 8 mm; not due"],
+      ["Calipers, all four", 1480, "flag:No symptom, no leak, no seizure; replacement not indicated"],
+      ["Brake fluid flush", 189, "ok:Due on the 3-year schedule; fair at $120 to $180"],
+      ["Hardware kit and shop supplies", 96, null],
+      ["Labor, 6.5 hrs @ $195", 1268, "flag:Book time for pads and rotors all around is 2 to 2.5 hrs"],
+    ], billed:4233, should:160, save:"+$4,073" },
+  hvac: { title:"Heating and air contractor", sub:"80k BTU furnace + 3-ton AC · model numbers listed", fair:true,
+    src:"A quote that comes back fair still gets three things checked: permit line, model numbers for the warranty, milestone payments.",
     lines:[
       ["Furnace, 96% AFUE, model listed", 3400, "ok:Brand and model specified"],
       ["Condenser, 15.2 SEER2, model listed", 3900, null],
@@ -394,6 +417,7 @@ function render(key){
   r.classList.toggle("is-fair", b.fair);
   document.getElementById("rTitle").textContent = b.title;
   document.getElementById("rSub").textContent = b.sub;
+  const src = document.getElementById("rSource"); if (src) src.textContent = b.src || "";
   const lines = document.getElementById("lines"); lines.innerHTML = "";
   b.lines.forEach(([name, amt, tag]) => {
     const d = document.createElement("div"); d.className = "line";
@@ -461,10 +485,12 @@ form.addEventListener("submit", async e => {
   const contact = document.getElementById("contact").value.trim();
   if (!file.files.length){ say("err", "Add a photo or PDF of the bill first."); return; }
   if (!contact){ say("err", "Add a phone number or email so we can send the verdict."); return; }
-  if (!FORM_ENDPOINT){ say("err", "Uploads aren't switched on yet. Text the photo to " + PHONE_DISPLAY + " and you'll get the same verdict."); return; }
+  const onNetlify = form.hasAttribute("data-netlify") && !/^file:/.test(location.protocol) && !/github\.io$/.test(location.hostname);
+  const target = FORM_ENDPOINT || (onNetlify ? "/" : "");
+  if (!target){ say("err", "Uploads aren't switched on here. Text the photo to " + PHONE_DISPLAY + " and you'll get the same verdict."); return; }
   submitBtn.disabled = true; submitBtn.textContent = "Sending…";
   try{
-    const res = await fetch(FORM_ENDPOINT, { method:"POST", body:new FormData(form), headers:{ "Accept":"application/json" } });
+    const res = await fetch(target, { method:"POST", body:new FormData(form), headers: FORM_ENDPOINT ? { "Accept":"application/json" } : {} });
     if (!res.ok) throw new Error(String(res.status));
     say("ok", "Got it. Reading the bill now. You'll have a verdict in about ten minutes at " + contact + ".");
     form.reset(); drop.classList.remove("has"); dropText.textContent = "Tap to choose a photo or PDF, or drag it here";
