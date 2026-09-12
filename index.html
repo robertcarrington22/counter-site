@@ -1,0 +1,475 @@
+<title>Counter</title>
+<meta name="description" content="Text a photo of any medical bill, contractor quote, or repair estimate. Free verdict in minutes. If it's padded, we fight it.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400;0,62..125,500;0,62..125,700;0,62..125,900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#FFFFFF; --paper:#F4F5F1; --paper-2:#EBEDE7; --line:#D9DCD4; --line-2:#C4C8BE;
+  --ink:#0E1013; --ink-2:#3A3F46; --muted:#6A7078;
+  --padded:#DF3A1C; --padded-soft:#FBE8E3; --fair:#12874A; --fair-soft:#E1F3E9;
+  --btn:#0E1013; --btn-ink:#FFFFFF;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1113; --paper:#181B1E; --paper-2:#20242A; --line:#2B3037; --line-2:#3A4049;
+    --ink:#EEF0EC; --ink-2:#C5C9C2; --muted:#8B919A;
+    --padded:#FF6A47; --padded-soft:#3A1C13; --fair:#3FCB83; --fair-soft:#12301F;
+    --btn:#EEF0EC; --btn-ink:#0F1113;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1113; --paper:#181B1E; --paper-2:#20242A; --line:#2B3037; --line-2:#3A4049;
+  --ink:#EEF0EC; --ink-2:#C5C9C2; --muted:#8B919A;
+  --padded:#FF6A47; --padded-soft:#3A1C13; --fair:#3FCB83; --fair-soft:#12301F;
+  --btn:#EEF0EC; --btn-ink:#0F1113;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--display);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{margin:0;line-height:1.02;text-wrap:balance;letter-spacing:-.02em}
+h1{font-size:clamp(40px,6.4vw,78px);font-weight:900;font-variation-settings:"wdth" 112;letter-spacing:-.035em}
+h2{font-size:clamp(30px,4vw,48px);font-weight:900;font-variation-settings:"wdth" 108;letter-spacing:-.03em}
+h3{font-size:22px;font-weight:700;font-variation-settings:"wdth" 100}
+p{margin:0 0 1em}
+.wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+.mono{font-family:var(--mono)}
+.tabnum{font-variant-numeric:tabular-nums}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--btn);color:var(--btn-ink);font-weight:700;font-size:17px;padding:15px 22px;border-radius:8px;text-decoration:none;border:2px solid var(--btn);cursor:pointer;font-family:var(--display);line-height:1}
+.btn:hover{transform:translateY(-1px)}
+.btn:focus-visible{outline:3px solid var(--padded);outline-offset:3px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-2)}
+.btn .num{font-family:var(--mono);font-weight:600;letter-spacing:.01em}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* top bar */
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:900;font-variation-settings:"wdth" 118;font-size:24px;letter-spacing:-.03em;text-decoration:none}
+.logo span{color:var(--padded)}
+.top nav{display:none;gap:22px;font-size:15px;font-weight:500}
+.top nav a{text-decoration:none;color:var(--ink-2)}
+.top nav a:hover{color:var(--ink)}
+@media(min-width:760px){.top nav{display:flex}}
+
+/* hero */
+.hero{padding:28px 0 64px;display:grid;grid-template-columns:1fr;gap:36px;align-items:center}
+@media(min-width:920px){.hero{grid-template-columns:1.05fr .95fr;gap:48px;padding:56px 0 88px}}
+.hero .lede{font-size:clamp(18px,1.6vw,21px);color:var(--ink-2);max-width:52ch;margin:22px 0 28px;line-height:1.5}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.trust{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:14px;color:var(--muted)}
+.trust span::before{content:"✓";color:var(--fair);font-weight:700;margin-right:6px}
+
+/* receipt */
+.receipt-wrap{display:grid;gap:12px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;padding:8px 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.tabs button:focus-visible{outline:3px solid var(--padded);outline-offset:2px}
+.receipt{position:relative;background:var(--paper);border:1px solid var(--line);padding:22px 22px 26px;font-family:var(--mono);font-size:13.5px;line-height:1.5;color:var(--ink);box-shadow:0 1px 0 var(--line-2), 0 18px 40px -28px rgba(0,0,0,.45)}
+.receipt::before,.receipt::after{content:"";position:absolute;left:0;right:0;height:8px;background:
+  radial-gradient(circle at 6px 4px, var(--ground) 5px, transparent 5.5px) repeat-x;background-size:14px 8px}
+.receipt::before{top:-1px}
+.receipt::after{bottom:-1px;transform:scaleY(-1)}
+.receipt .rh{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line-2);padding-bottom:10px;margin-bottom:10px;color:var(--ink-2)}
+.receipt .rh b{color:var(--ink);font-weight:600;display:block}
+.lines{display:grid;gap:0}
+.line{display:grid;grid-template-columns:1fr auto;gap:10px;padding:5px 0;border-bottom:1px dotted var(--line)}
+.line .amt{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.line.flag{background:var(--padded-soft);margin:0 -8px;padding:5px 8px;border-radius:3px;border-bottom-color:transparent}
+.line.flag .amt{text-decoration:line-through;text-decoration-color:var(--padded);text-decoration-thickness:2px}
+.line .why{grid-column:1/-1;font-size:12px;color:var(--padded);font-weight:600}
+.line.ok .why{color:var(--fair)}
+.line.ok{background:var(--fair-soft);margin:0 -8px;padding:5px 8px;border-radius:3px;border-bottom-color:transparent}
+.totals{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line-2);display:grid;gap:4px}
+.totals div{display:flex;justify-content:space-between;gap:10px}
+.totals .big{font-weight:600;font-size:15px}
+.totals .save{color:var(--padded);font-weight:600}
+.stamp{position:absolute;right:18px;top:16px;transform:rotate(-8deg);font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 118;font-size:26px;letter-spacing:.02em;text-transform:uppercase;padding:6px 12px;border:4px solid var(--padded);color:var(--padded);border-radius:6px;background:color-mix(in srgb,var(--ground) 70%,transparent);line-height:1;text-align:center}
+.stamp small{display:block;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;margin-top:2px}
+.receipt.is-fair .stamp{border-color:var(--fair);color:var(--fair)}
+.receipt.is-fair .totals .save{color:var(--fair)}
+.receipt-foot{font-size:12.5px;color:var(--muted);font-family:var(--display)}
+@media (prefers-reduced-motion: no-preference){
+  .stamp{animation:thump .35s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes thump{from{transform:rotate(-8deg) scale(1.15);opacity:.4}to{transform:rotate(-8deg) scale(1);opacity:1}}
+}
+
+/* sections */
+section{padding:64px 0;border-top:1px solid var(--line)}
+section .head{margin-bottom:28px;max-width:60ch}
+section .head p{color:var(--ink-2);font-size:18px;margin-top:12px}
+.steps{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+@media(min-width:760px){.steps{grid-template-columns:repeat(3,1fr)}}
+.steps>div{background:var(--paper);padding:22px 22px 24px}
+.steps .n{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.1em;margin-bottom:10px}
+.steps h3{margin-bottom:8px}
+.steps p{margin:0;color:var(--ink-2);font-size:15.5px}
+
+.lanes{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.lanes{grid-template-columns:repeat(3,1fr)}}
+.lane{border:1px solid var(--line);padding:20px;background:var(--ground)}
+.lane h3{margin-bottom:8px}
+.lane p{font-size:15px;color:var(--ink-2);margin:0 0 10px}
+.lane .ex{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.lane .ex b{color:var(--padded);font-weight:600}
+.soon{font-size:14px;color:var(--muted);margin-top:14px}
+
+.how{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.how{grid-template-columns:1fr 1fr}}
+.how>div{background:var(--paper);border:1px solid var(--line);padding:20px}
+.how h3{font-size:18px;margin-bottom:6px}
+.how p{font-size:15px;color:var(--ink-2);margin:0}
+
+.pricing{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:860px){.pricing{grid-template-columns:1fr 1fr 1fr}}
+.price{border:1px solid var(--line);padding:26px 24px;background:var(--ground);position:relative}
+.price.hot{border-color:var(--ink);border-width:2px}
+.price .amt{font-weight:900;font-variation-settings:"wdth" 112;font-size:clamp(40px,5vw,60px);letter-spacing:-.04em;line-height:1}
+.price .amt small{font-size:17px;font-weight:500;letter-spacing:0;font-variation-settings:"wdth" 100;color:var(--ink-2)}
+.price h3{margin:10px 0 8px}
+.price p{font-size:15.5px;color:var(--ink-2);margin:0 0 8px}
+.price ul{margin:8px 0 0;padding-left:18px;font-size:15px;color:var(--ink-2)}
+.price li{margin:4px 0}
+.guarantee{margin-top:16px;padding:14px 16px;background:var(--fair-soft);border-left:4px solid var(--fair);font-size:15px}
+
+.faq details{border-top:1px solid var(--line);padding:4px 0}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:700;font-size:18px;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--mono);color:var(--muted);font-size:20px}
+.faq details[open] summary::after{content:"–"}
+.faq summary:focus-visible{outline:3px solid var(--padded);outline-offset:2px}
+.faq .a{padding:0 0 16px;color:var(--ink-2);max-width:66ch;font-size:16px}
+
+/* upload */
+.upload{background:var(--paper);border:1px solid var(--line);padding:26px 24px;display:grid;gap:14px;max-width:640px}
+.upload label{display:grid;gap:6px;font-weight:600;font-size:14.5px}
+.upload input[type=text],.upload input[type=tel],.upload textarea{font:inherit;font-size:16px;padding:12px 12px;border:1px solid var(--line-2);border-radius:6px;background:var(--ground);color:var(--ink);width:100%}
+.upload textarea{min-height:76px;resize:vertical}
+.upload input:focus-visible,.upload textarea:focus-visible{outline:3px solid var(--padded);outline-offset:1px}
+.drop{border:2px dashed var(--line-2);border-radius:8px;padding:22px;text-align:center;color:var(--ink-2);font-size:15px;cursor:pointer;background:var(--ground)}
+.drop.has{border-style:solid;border-color:var(--fair);color:var(--ink)}
+.drop input{display:none}
+.upload .fine{font-size:13px;color:var(--muted);margin:0}
+.msg{padding:12px 14px;border-radius:6px;font-size:15px;display:none}
+.msg.ok{display:block;background:var(--fair-soft);border-left:4px solid var(--fair)}
+.msg.err{display:block;background:var(--padded-soft);border-left:4px solid var(--padded)}
+
+/* final */
+.final{padding:80px 0;border-top:1px solid var(--line);background:var(--paper)}
+.final h2{font-size:clamp(34px,5.4vw,66px);max-width:14ch}
+.final p{font-size:19px;color:var(--ink-2);margin:16px 0 24px}
+footer{padding:28px 0 96px;font-size:13.5px;color:var(--muted);border-top:1px solid var(--line)}
+footer p{max-width:80ch}
+
+/* results */
+#results{display:none}
+#results.on{display:block}
+.results{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.results{grid-template-columns:repeat(3,1fr)}}
+.res{background:var(--paper);border:1px solid var(--line);padding:18px 18px 16px;font-family:var(--mono);font-size:13px;position:relative}
+.res .kind{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;gap:8px}
+.res .nums{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:8px 0;border-top:1px dashed var(--line-2);border-bottom:1px dashed var(--line-2)}
+.res .nums .was{text-decoration:line-through;text-decoration-color:var(--padded);text-decoration-thickness:2px;color:var(--ink-2)}
+.res .nums .now{font-weight:600;font-size:15px}
+.res .saved{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 112;font-size:30px;letter-spacing:-.03em;color:var(--padded);margin:10px 0 2px;line-height:1}
+.res .saved small{display:block;font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.res .found{font-family:var(--display);font-size:14.5px;color:var(--ink-2);margin:10px 0 0;line-height:1.45}
+.res .quote{font-family:var(--display);font-size:14px;font-style:italic;color:var(--ink);margin:10px 0 0;padding-top:8px;border-top:1px dotted var(--line-2)}
+.res .quote span{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:2px}
+.tally{display:flex;flex-wrap:wrap;gap:10px 28px;margin-bottom:22px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.tally b{font-family:var(--display);font-weight:900;font-size:26px;letter-spacing:-.03em;color:var(--ink);display:block;line-height:1}
+
+/* sticky mobile CTA */
+.sticky{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:color-mix(in srgb,var(--ground) 92%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;justify-content:center;z-index:9}
+.sticky .btn{width:100%;justify-content:center;max-width:520px}
+@media(min-width:760px){.sticky{display:none}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <a class="logo" href="#top" id="top">Counter<span>.</span></a>
+    <nav><a href="#how">How it works</a><a href="#lanes">What we fight</a><a href="#results" id="navResults" hidden>Results</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="#upload">Upload a bill</a></nav>
+  </div>
+
+  <div class="hero">
+    <div>
+      <span class="eyebrow">Free verdict · pay only if we win</span>
+      <h1 style="margin-top:14px">Text it the bill.<br>We'll tell you if you're being ripped off.</h1>
+      <p class="lede">Send a photo of any medical bill, contractor quote, or repair estimate. In about ten minutes you get a verdict: fair, or padded, and by how much. If it's padded, we fight it for you.</p>
+      <div class="ctas">
+        <a class="btn" id="smsBtn" href="#"><span>Text a photo to</span><span class="num" data-phone></span></a>
+        <a class="btn ghost" href="#upload">Or upload it here</a>
+      </div>
+      <div class="trust"><span>No account, no card</span><span>Verdict in ~10 minutes</span><span>Fight it yourself for $29, or we do it</span></div>
+    </div>
+
+    <div class="receipt-wrap" id="demo">
+      <div class="tabs" role="tablist" aria-label="Example bills">
+        <button role="tab" aria-selected="true" data-bill="er">ER bill</button>
+        <button role="tab" aria-selected="false" data-bill="roof">Roof quote</button>
+        <button role="tab" aria-selected="false" data-bill="brakes">Brake estimate</button>
+        <button role="tab" aria-selected="false" data-bill="hvac">HVAC quote (fair)</button>
+      </div>
+      <div class="receipt" id="receipt" aria-live="polite">
+        <div class="stamp" id="stamp">Padded<small id="stampSub">+$1,870</small></div>
+        <div class="rh"><div><b id="rTitle">Regional Medical Center</b><span id="rSub">Emergency dept · DOS 08/14</span></div><div style="text-align:right"><b>VERDICT</b><span id="rDate">Sept 2026</span></div></div>
+        <div class="lines" id="lines"></div>
+        <div class="totals">
+          <div><span>Billed</span><span class="tabnum" id="tBilled"></span></div>
+          <div class="big"><span id="tLabel">Should be about</span><span class="tabnum" id="tShould"></span></div>
+          <div class="save"><span id="sLabel">Padding found</span><span class="tabnum" id="tSave"></span></div>
+        </div>
+      </div>
+      <p class="receipt-foot">Illustrative examples. Your verdict comes with the exact lines, the reason, and what we'd do about it.</p>
+    </div>
+  </div>
+</div>
+
+<section id="how"><div class="wrap">
+  <div class="head"><span class="eyebrow">How it works</span><h2>Three steps. You never talk to billing.</h2></div>
+  <div class="steps">
+    <div><div class="n">STEP 1</div><h3>Send the photo</h3><p>Bill, quote, estimate, or the "final offer" letter. Blurry is fine. Multiple pages are fine. No account, no card.</p></div>
+    <div><div class="n">STEP 2</div><h3>Get the verdict</h3><p>We check every line against what that service actually costs where you live. You get a number and the reason: "About $1,870 padded. A duplicate charge and a fee that shouldn't apply."</p></div>
+    <div><div class="n">STEP 3</div><h3>Pick how to fight it</h3><p>Take the $29 kit and make the call yourself with the letters and script written for you. Or have us send the letters, make the calls, and report back.</p></div>
+  </div>
+</div></section>
+
+<section id="lanes"><div class="wrap">
+  <div class="head"><span class="eyebrow">What we fight</span><h2>The bills people accept because arguing feels worse.</h2></div>
+  <div class="lanes">
+    <div class="lane"><h3>Hospital and doctor bills</h3><p>Duplicate charges, wrong codes, facility fees that shouldn't be there, and the cash rate nobody told you about. About one in three medical bills contains an error.</p><div class="ex">Typical find: <b>same CT scan billed twice</b></div></div>
+    <div class="lane"><h3>Contractor quotes</h3><p>Roofing, HVAC, plumbing, remodels. We compare every line against real local pricing and get you two more bids while you sleep.</p><div class="ex">Typical find: <b>"up to 10 sheets included" decking padding</b></div></div>
+    <div class="lane"><h3>Car repair estimates</h3><p>Labor hours versus book time, parts markup, and the "while we're in there" add-ons at 48,000 miles. We also check your VIN for open recalls and warranty coverage first, which sometimes makes the whole bill disappear.</p><div class="ex">Typical find: <b>4.5 hours billed on a 2-hour job</b></div></div>
+  </div>
+  <p class="soon">Coming next: rent renewals and insurance total-loss offers. We don't handle insurance claims, legal disputes, or anything that needs a license. We'll tell you when you need a professional, and who to call.</p>
+</div></section>
+
+<section id="method"><div class="wrap">
+  <div class="head"><span class="eyebrow">How we know</span><h2>The verdict is a comparison, not an opinion.</h2><p>Every line on your bill gets checked against a public or regional benchmark. We tell you how confident we are, and we say "fair" when it's fair.</p></div>
+  <div class="how">
+    <div><h3>Medical bills</h3><p>Each code is compared to the Medicare rate and the hospital's own published price list. We look for duplicates, upcoded visit levels, out-of-network charges on in-network visits, and providers you never saw.</p></div>
+    <div><h3>Contractor quotes</h3><p>Line items are compared to regional cost guides and every quote we've reviewed in your area. We flag missing permits, vague allowances, and deposits above your state's legal cap.</p></div>
+    <div><h3>Car repair</h3><p>Labor is checked against published book time for your exact vehicle. Parts are checked against retail. Add-on services are checked against the manufacturer's maintenance schedule.</p></div>
+    <div><h3>What you always get</h3><p>Whether it's padded or fair, by roughly how much, and what kind of problem we found. Free. The line-by-line detail and the letters to fix it are in the kit.</p></div>
+  </div>
+</div></section>
+
+<section id="results"><div class="wrap">
+  <div class="head"><span class="eyebrow">Results</span><h2>What it looks like when it works.</h2><p>Real bills, real outcomes, shared with the customer's permission. Names and account details removed.</p></div>
+  <div class="tally" id="tally"></div>
+  <div class="results" id="resultsGrid"></div>
+</div></section>
+
+<section id="pricing"><div class="wrap">
+  <div class="head"><span class="eyebrow">Pricing</span><h2>The verdict is free. How you fight it is your call.</h2></div>
+  <div class="pricing">
+    <div class="price"><div class="amt">$0</div><h3>The verdict</h3><p>Every bill, every time. Share it, argue with it, or just feel better.</p><ul><li>Padded or fair, and by roughly how much</li><li>What kind of problem we found: a duplicate, a wrong code, a fee that shouldn't be there</li><li>Whether it's worth fighting</li></ul></div>
+    <div class="price hot"><div class="amt">$29</div><h3>Fight it yourself</h3><p>Everything you need to make the call and win it. Most people do.</p><ul><li>The exact lines, the amounts, and why each one is wrong</li><li>Your dispute letter and itemized-bill request, pre-filled and ready to send</li><li>A call script with your numbers in it</li><li>Text us during the call and we answer in a minute</li><li>Car repair: we call two independent shops for comparison quotes, included</li></ul><div class="guarantee">Delivered in minutes. If the verdict was "fair," there's nothing to buy.</div></div>
+    <div class="price"><div class="amt">$99 <small>flat, or 20% of what we save</small></div><h3>We fight it</h3><p>For people who would rather not make the call. You choose the fee up front.</p><ul><li>Everything in the kit</li><li>We send the letters and make the calls, and you get the notes or transcript</li><li>Competing bids gathered for contractor quotes</li><li>Usually three to six weeks for medical bills, about ten days for quotes</li></ul><div class="guarantee">If we save you nothing, you pay nothing.</div><p style="font-size:13.5px;color:var(--muted);margin:12px 0 0">The percentage option is for medical bills only; contractor and repair quotes are always the flat fee. Car repair estimates under about $2,500 are kit-only, because you'll be the one on the phone with the shop anyway and the fee wouldn't be worth it. Reductions from a hospital's financial assistance or charity care program are never subject to the percentage. If that's how your bill gets lowered, you owe the flat fee at most, and often nothing.</p></div>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div class="head"><span class="eyebrow">Questions</span><h2>The ones people ask before they send the photo.</h2></div>
+  <div class="faq">
+    <details><summary>Is this a person or an AI?</summary><div class="a">Both. AI reads the bill, checks every line, and drafts the dispute. A person reviews every verdict and every counter before it goes out, and during our launch a person makes the calls. Whenever an AI assistant is on a call, we say so in the first sentence, and we say the call is recorded.</div></details>
+    <details><summary>Will you really call my hospital or my contractor?</summary><div class="a">Yes, once you tell us to. Most medical disputes are actually won in writing, so we start with the itemized-bill request and the written dispute, then call for status and the self-pay rate. You see the plan first, you approve it, and you get the notes or transcript after. You can stop us at any point with one text.</div></details>
+    <details><summary>What if I already paid?</summary><div class="a">Send it anyway. Refunds on billing errors and double payments are common, and you'll know what to look for next time.</div></details>
+    <details><summary>How do you know what a fair price is?</summary><div class="a">For medical bills we compare against Medicare rates and the hospital's own published prices. For contractors and repair shops we use regional cost guides and every quote we've reviewed in your area. We tell you how confident we are, and when we aren't.</div></details>
+    <details><summary>What do you do with my bill?</summary><div class="a">Read it, fight it if you ask, and keep it in your file so the next one is faster. We never sell it or share it with anyone but the party we're negotiating with. Delete everything with one text.</div></details>
+    <details><summary>Are you lawyers? Insurance adjusters?</summary><div class="a">No. If your situation needs one, we'll say so and point you to someone good. Counter is not a law firm, a public adjuster, or a medical provider.</div></details>
+    <details><summary>What counts as "savings" for the 20% option?</summary><div class="a">The difference between the patient-responsibility amount on your current statement and what you actually pay after our work. We state that number in writing before you choose the percentage option. Reductions from financial assistance or charity care programs are excluded from the percentage entirely, and the percentage is only offered on medical bills.</div></details>
+    <details><summary>Why would I pay $29 when the verdict is free?</summary><div class="a">The free verdict tells you whether the bill is padded, by roughly how much, and what kind of problem we found. The kit gives you the specific lines and amounts, the letters already written with your account details, and the script for the call. It's the difference between knowing you're overpaying and having the thing you send to fix it.</div></details>
+    <details><summary>My car is at the shop right now. Is there time for this?</summary><div class="a">Yes. Text the shop "please don't start any work yet, I'll get back to you within a couple of hours," then send us the estimate. The verdict takes about ten minutes, and the kit includes us calling two independent shops for comparison quotes while you wait. If the repair is a safety issue, we'll say so and help you get it done today at a fair price rather than tell you to shop around.</div></details>
+    <details><summary>What if the verdict says it's fair?</summary><div class="a">Then it's fair, and we'll tell you the two or three things worth asking before you sign. We don't manufacture fights.</div></details>
+  </div>
+</div></section>
+
+<section id="upload"><div class="wrap">
+  <div class="head"><span class="eyebrow">Don't want to text?</span><h2>Upload it here instead.</h2><p>Same verdict, same ten minutes. We'll reply by text or email, whichever you give us.</p></div>
+  <form class="upload" id="uploadForm" novalidate>
+    <label class="drop" id="drop" for="file"><span id="dropText">Tap to choose a photo or PDF, or drag it here</span><input type="file" id="file" name="bill" accept="image/*,.pdf" multiple></label>
+    <label>Phone or email for the verdict<input type="text" name="contact" id="contact" autocomplete="tel email" placeholder="(555) 555-5555 or you@example.com" required></label>
+    <label>Anything we should know? <span style="font-weight:400;color:var(--muted)">(optional)</span><textarea name="note" placeholder="Already paid part of it. Insurance said it was in-network. The contractor wants an answer by Friday."></textarea></label>
+    <div><button class="btn" type="submit" id="submitBtn">Get my free verdict</button></div>
+    <p class="fine">By sending, you're asking us to review this document and reply once. No marketing texts. Delete anytime.</p>
+    <div class="msg" id="msg" role="status"></div>
+  </form>
+</div></section>
+
+<div class="final"><div class="wrap">
+  <h2>You've been paying the first number they said.</h2>
+  <p>Stop. Send the photo.</p>
+  <a class="btn" href="#" id="smsBtn2"><span>Text a photo to</span><span class="num" data-phone></span></a>
+</div></div>
+
+<footer><div class="wrap">
+  <p><b>Counter</b> is not a law firm, insurance adjuster, or medical provider. Verdicts are estimates based on public and regional pricing data and are not guarantees of savings. Calls are made only with your permission and are disclosed as AI-assisted and recorded. Example bills on this page are illustrative.</p>
+  <p>© 2026 Counter · Lynchburg, Virginia · <a href="legal.html#terms">Terms</a> · <a href="legal.html#privacy">Privacy</a> · <a href="legal.html#health">Consumer Health Data Privacy Policy</a> · <a href="legal.html#sms">Texting</a> · robertcarrington22@gmail.com</p>
+</div></footer>
+
+<div class="sticky"><a class="btn" href="#" id="smsBtn3"><span>Text a photo to</span><span class="num" data-phone></span></a></div>
+
+<script>
+/* ===== CONFIG: change these two lines =====
+   Phone setup (Quo, formerly OpenPhone, quo.com, Starter plan ~$15/mo):
+   1. Get a local number, not toll-free. People text local numbers.
+   2. Register the number for A2P 10DLC messaging in the Quo dashboard the day
+      you sign up. US carriers filter unregistered business texts; approval takes
+      a few days. Use "Counter" and the landing page URL in the brand registration.
+   3. Turn on call recording with the automatic announcement, so the consent line
+      plays on every call without you remembering it.
+   4. Set the auto-reply for first-time texters to the "Got it" message from the
+      launch copy doc, then turn it off once you're answering live.
+   5. Use the desktop app for the day's inbox; every verdict goes out as a text
+      from the shared number, never from your personal phone.
+*/
+const PHONE_DISPLAY = "(555) 555-0199";   // shown on buttons
+const PHONE_E164    = "+15555550199";     // used in the sms: link
+const SMS_BODY      = "Here's my bill:";  // prefilled text
+const FORM_ENDPOINT = "";                 // e.g. "https://formspree.io/f/xxxx" — leave empty until you have one
+
+/* REAL RESULTS: add one object per closed fight. The section stays hidden while this is empty.
+   Only add cases the customer agreed to share. `quote` and `who` are optional.
+   kind:  "Medical bill" | "Contractor quote" | "Car repair" | ...
+   found: one sentence, what was wrong and what fixed it
+   Example (delete before launch):
+   { kind:"Medical bill", label:"ER visit, chest pain", was:4212, now:2340, days:9,
+     found:"Duplicate CT charge and an out-of-network facility fee removed after an itemized-bill request.",
+     quote:"I'd already decided to just pay it.", who:"J., Virginia" },
+*/
+const RESULTS = [
+];
+/* ========================================== */
+
+document.querySelectorAll("[data-phone]").forEach(el => el.textContent = PHONE_DISPLAY);
+const smsHref = "sms:" + PHONE_E164 + "?&body=" + encodeURIComponent(SMS_BODY);
+["smsBtn","smsBtn2","smsBtn3"].forEach(id => { const a = document.getElementById(id); if (a) a.href = smsHref; });
+
+/* ---- hero demo ---- */
+const BILLS = {
+  er: { title:"Regional Medical Center", sub:"Emergency dept · DOS 08/14", fair:false,
+    lines:[
+      ["ER visit, level 4 (99284)", 1180, "ok:Normal for chest-pain workup"],
+      ["EKG, 12-lead (93010)", 210, null],
+      ["CT chest w/ contrast (71260)", 1240, null],
+      ["CT chest w/ contrast (71260)", 1240, "flag:Same study billed twice"],
+      ["IV push, initial (96374)", 340, "flag:Billed at higher-tier code; likely $220 too much"],
+      ["Facility fee, outpatient", 410, "flag:In-network visit; shouldn't apply"],
+      ["Troponin, x2", 180, null],
+    ], billed:4800, should:2930, save:"+$1,870" },
+  roof: { title:"Ridgeline Roofing LLC", sub:"1,900 sq ft ranch · architectural shingle", fair:false,
+    lines:[
+      ["Tear-off and disposal, 1 layer", 2400, null],
+      ["Architectural shingles, 24 sq", 7900, null],
+      ["Ice & water shield, full deck", 1950, "flag:Code needs eaves/valleys only; $1,200 upsell"],
+      ["Decking replacement, up to 10 sheets", 1800, "flag:No per-sheet rate stated; padded after the fact"],
+      ["Ridge vent and flashing", 1150, null],
+      ["Labor, 2 days", 4900, "flag:High for a low-pitch ranch; local range $3,200 to $3,800"],
+      ["Permit", 0, "flag:Not listed. Ask."],
+    ], billed:21400, should:16200, save:"+$5,200" },
+  brakes: { title:"Metro Toyota Service", sub:"2019 RAV4 · 61,000 mi", fair:false,
+    lines:[
+      ["Front pads and rotors, OEM", 310, null],
+      ["Rear pads and rotors, OEM", 290, null],
+      ["Labor, 4.5 hrs @ $180", 810, "flag:Book time is 2.0 to 2.5 hrs"],
+      ["Brake fluid flush", 189, "flag:Not requested; not due"],
+      ["Shop supplies", 42, null],
+    ], billed:1641, should:1010, save:"+$631" },
+  hvac: { title:"Northside Heating & Air", sub:"80k BTU furnace + 3-ton AC", fair:true,
+    lines:[
+      ["Furnace, 96% AFUE, model listed", 3400, "ok:Brand and model specified"],
+      ["Condenser, 15.2 SEER2, model listed", 3900, null],
+      ["Coil, line set, thermostat", 1350, null],
+      ["Labor and startup, 2 techs", 2100, "ok:Within local range"],
+      ["Permit and inspection", 280, "ok:Included and itemized"],
+      ["10-yr parts / 2-yr labor warranty", 0, null],
+    ], billed:11030, should:11030, save:"Within 6% of typical" },
+};
+const fmt = n => n === 0 ? "—" : "$" + n.toLocaleString("en-US");
+function render(key){
+  const b = BILLS[key];
+  const r = document.getElementById("receipt");
+  r.classList.toggle("is-fair", b.fair);
+  document.getElementById("rTitle").textContent = b.title;
+  document.getElementById("rSub").textContent = b.sub;
+  const lines = document.getElementById("lines"); lines.innerHTML = "";
+  b.lines.forEach(([name, amt, tag]) => {
+    const d = document.createElement("div"); d.className = "line";
+    let why = "";
+    if (tag){ const [k,v] = tag.split(":"); d.classList.add(k); why = `<span class="why">${k==="flag"?"▲ ":"✓ "}${v}</span>`; }
+    d.innerHTML = `<span>${name}</span><span class="amt">${fmt(amt)}</span>${why}`;
+    lines.appendChild(d);
+  });
+  document.getElementById("tBilled").textContent = fmt(b.billed);
+  document.getElementById("tShould").textContent = fmt(b.should);
+  document.getElementById("tLabel").textContent = b.fair ? "Typical for this job" : "Should be about";
+  document.getElementById("sLabel").textContent = b.fair ? "Verdict" : "Padding found";
+  document.getElementById("tSave").textContent = b.save;
+  const stamp = document.getElementById("stamp");
+  stamp.firstChild.textContent = b.fair ? "Fair" : "Padded";
+  document.getElementById("stampSub").textContent = b.fair ? "sign it" : b.save;
+  stamp.style.animation = "none"; void stamp.offsetWidth; stamp.style.animation = "";
+}
+document.querySelectorAll(".tabs button").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", b === btn));
+  render(btn.dataset.bill);
+}));
+render("er");
+
+/* ---- real results ---- */
+(function(){
+  const sec = document.getElementById("results");
+  if (!RESULTS.length) return;
+  sec.classList.add("on");
+  const nav = document.getElementById("navResults"); if (nav) nav.hidden = false;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const money = n => "$" + Math.round(n).toLocaleString("en-US");
+  const totalSaved = RESULTS.reduce((a,r) => a + (r.was - r.now), 0);
+  const wins = RESULTS.filter(r => r.now < r.was).length;
+  const avgDays = Math.round(RESULTS.filter(r => r.days).reduce((a,r) => a + r.days, 0) / Math.max(1, RESULTS.filter(r => r.days).length));
+  document.getElementById("tally").innerHTML =
+    `<div><b>${money(totalSaved)}</b>saved so far</div><div><b>${wins}/${RESULTS.length}</b>fights that lowered the bill</div>` +
+    (avgDays ? `<div><b>${avgDays} days</b>average to close</div>` : "");
+  const grid = document.getElementById("resultsGrid");
+  RESULTS.forEach(r => {
+    const saved = r.was - r.now, pct = r.was ? Math.round(saved / r.was * 100) : 0;
+    const d = document.createElement("div"); d.className = "res";
+    d.innerHTML = `<div class="kind"><span>${esc(r.kind)}</span><span>${r.days ? esc(r.days) + " days" : ""}</span></div>
+      <div style="font-family:var(--display);font-weight:700;font-size:16px;margin-bottom:6px">${esc(r.label || "")}</div>
+      <div class="nums"><span>Billed</span><span class="was tabnum">${money(r.was)}</span><span>Paid</span><span class="now tabnum">${money(r.now)}</span></div>
+      <div class="saved">${money(saved)}<small>saved · ${pct}% off the bill</small></div>
+      <p class="found">${esc(r.found || "")}</p>
+      ${r.quote ? `<p class="quote">“${esc(r.quote)}”${r.who ? `<span>${esc(r.who)}</span>` : ""}</p>` : ""}`;
+    grid.appendChild(d);
+  });
+})();
+
+/* ---- upload form ---- */
+const drop = document.getElementById("drop"), file = document.getElementById("file"), dropText = document.getElementById("dropText");
+function showFiles(){ if (file.files.length){ drop.classList.add("has"); dropText.textContent = file.files.length === 1 ? file.files[0].name : file.files.length + " files selected"; } }
+file.addEventListener("change", showFiles);
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("has"); }));
+drop.addEventListener("dragleave", () => { if (!file.files.length) drop.classList.remove("has"); });
+drop.addEventListener("drop", e => { e.preventDefault(); file.files = e.dataTransfer.files; showFiles(); });
+
+const form = document.getElementById("uploadForm"), msg = document.getElementById("msg"), submitBtn = document.getElementById("submitBtn");
+function say(kind, text){ msg.className = "msg " + kind; msg.textContent = text; }
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const contact = document.getElementById("contact").value.trim();
+  if (!file.files.length){ say("err", "Add a photo or PDF of the bill first."); return; }
+  if (!contact){ say("err", "Add a phone number or email so we can send the verdict."); return; }
+  if (!FORM_ENDPOINT){ say("err", "Uploads aren't switched on yet. Text the photo to " + PHONE_DISPLAY + " and you'll get the same verdict."); return; }
+  submitBtn.disabled = true; submitBtn.textContent = "Sending…";
+  try{
+    const res = await fetch(FORM_ENDPOINT, { method:"POST", body:new FormData(form), headers:{ "Accept":"application/json" } });
+    if (!res.ok) throw new Error(String(res.status));
+    say("ok", "Got it. Reading the bill now. You'll have a verdict in about ten minutes at " + contact + ".");
+    form.reset(); drop.classList.remove("has"); dropText.textContent = "Tap to choose a photo or PDF, or drag it here";
+  }catch(err){
+    say("err", "That didn't go through. Text the photo to " + PHONE_DISPLAY + " instead and we'll take it from there.");
+  }finally{ submitBtn.disabled = false; submitBtn.textContent = "Get my free verdict"; }
+});
+</script>

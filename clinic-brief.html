@@ -1,0 +1,91 @@
+<meta name="robots" content="noindex,nofollow">
+<title>Counter Clinic Brief</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400;62..125,500;62..125,700;62..125,900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--ground:#FFFFFF;--paper:#F4F5F1;--line:#D9DCD4;--line-2:#C4C8BE;--ink:#0E1013;--ink-2:#3A3F46;--muted:#6A7078;--padded:#DF3A1C;
+--display:"Archivo","Helvetica Neue",Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#0F1113;--paper:#181B1E;--line:#2B3037;--line-2:#3A4049;--ink:#EEF0EC;--ink-2:#C5C9C2;--muted:#8B919A;--padded:#FF6A47}}
+:root[data-theme="dark"]{--ground:#0F1113;--paper:#181B1E;--line:#2B3037;--line-2:#3A4049;--ink:#EEF0EC;--ink-2:#C5C9C2;--muted:#8B919A;--padded:#FF6A47}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--display);font-size:14.5px;line-height:1.45}
+.page{max-width:760px;margin:0 auto;padding:36px 28px 48px}
+h1{font-size:30px;font-weight:900;font-variation-settings:"wdth" 112;letter-spacing:-.03em;line-height:1;margin:0}
+h2{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--padded);margin:18px 0 6px;font-weight:600}
+p{margin:0 0 8px}
+ul,ol{margin:0 0 8px;padding-left:18px}li{margin:3px 0}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:6px;flex-wrap:wrap}
+.head .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-align:right;line-height:1.4}
+.sub{font-size:16px;color:var(--ink-2);margin:6px 0 0}
+.grid{display:grid;grid-template-columns:1fr;gap:0 28px}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+.box{background:var(--paper);border:1px solid var(--line);padding:12px 14px;margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:13px;margin:4px 0 8px}
+td,th{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:0}
+.q{counter-reset:q}
+.q li{list-style:none;margin:6px 0;padding-left:26px;position:relative}
+.q li::before{counter-increment:q;content:counter(q);position:absolute;left:0;top:0;font-family:var(--display);font-weight:900;color:var(--padded);font-size:16px}
+.q b{display:block}
+.ph{color:var(--padded);font-weight:600}
+.foot{margin-top:16px;padding-top:10px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+@media print{@page{size:letter;margin:0.4in 0.5in}body{font-size:8.9pt;line-height:1.28;color:#000;background:#fff}.page{padding:0;max-width:none}h1{font-size:20pt}.sub{font-size:10pt;margin-top:3px}.head{padding-bottom:6px;margin-bottom:2px}.head .meta{font-size:8pt}h2{font-size:7.5pt;margin:9px 0 3px;color:#000}p{margin:0 0 5px}ul,ol{margin:0 0 5px}li{margin:1.5px 0}table{font-size:8.3pt;margin:2px 0 4px}td,th{padding:3px 6px}.q li{margin:4px 0}.box{padding:6px 9px;margin-top:4px;background:#f4f4f4;font-size:8.6pt}.foot{display:none}.ph{color:#000}.q li::before{color:#000;font-size:12pt}.grid{gap:0 18px}}
+</style>
+
+<div class="page">
+  <div class="head">
+    <div><h1>Counter</h1><p class="sub">A consumer billing-review service. Text a photo of a bill or quote; find out if it's padded; fix it.</p></div>
+    <div class="meta">Robert Carrington · UVA 2024<br>Lynchburg, Virginia<br>robertcarrington22@gmail.com · (434) 841-7411<br>Prepared for the Entrepreneurial Law Clinic · September 2026</div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <h2>What it does</h2>
+      <p>A customer texts a photo of a medical bill, contractor quote, or car repair estimate. Within about ten minutes they get a <b>verdict</b>: padded or fair, roughly by how much, and what kind of problem was found (a duplicate charge, an upcoded visit, a facility fee, labor hours above book time). The verdict is free.</p>
+      <p>If they want to act on it, two options:</p>
+      <ul>
+        <li><b>Kit, $29.</b> The specific lines and amounts, a dispute letter and itemized-bill request pre-filled with their details, and a call script. The customer sends the letters and makes the calls in their own name. Text support while they do. For car repair, we call two shops to collect comparison quotes.</li>
+        <li><b>Done-for-you, $99 flat or 20% of savings (planned, not yet offered).</b> With the customer's signed authorization, we send the letters and make the calls as their representative and report back. Percentage option on medical bills only; never applied to reductions from hospital financial-assistance programs.</li>
+      </ul>
+
+      <h2>How the verdict is made</h2>
+      <p>Line items are compared against public benchmarks: Medicare rates and hospital published price lists for medical bills, regional cost guides for contractor work, published flat-rate labor times for car repair. AI models help read the document and draft the letters; a person reviews every verdict and every letter before it goes out. Verdicts carry a stated confidence level and say "fair" when the bill is fair.</p>
+
+      <h2>What it is not</h2>
+      <p>Not a law firm, medical provider, insurance producer, public adjuster, credit repair organization, or debt settlement company, and the terms say so. We don't handle insurance claims, make payments for customers, or accept payments on their behalf. Customers make every decision.</p>
+    </div>
+
+    <div>
+      <h2>Stage and structure</h2>
+      <table>
+        <tr><th>Status</th><td>Pre-revenue. Two-week validation test starting September 21, 2026.</td></tr>
+        <tr><th>Entity</th><td>Sole proprietor for the test; Virginia LLC before any done-for-you work.</td></tr>
+        <tr><th>Scope during test</th><td>Free verdicts and the $29 kit only. No calls on anyone's behalf, no authorizations collected, no percentage fees.</td></tr>
+        <tr><th>Channels</th><td>A business text line (Quo), a single-page website, replies in consumer forums where people already post "is this bill fair?"</td></tr>
+        <tr><th>Data</th><td>Bills contain health and financial information. Stored encrypted, deleted 90 days after a matter closes or on request; de-identified pricing data retained.</td></tr>
+        <tr><th>Team</th><td>One founder. Background in statistics and go-to-market roles.</td></tr>
+      </table>
+
+      <h2>Already drafted</h2>
+      <ul>
+        <li>Terms of service, privacy policy, consumer health data policy, SMS disclosures</li>
+        <li>Customer authorization for billing representation</li>
+        <li>HIPAA authorization (drafted to 45 CFR 164.508) and a health-plan representative appointment</li>
+        <li>Medical bill letters (itemized request, dispute, financial assistance, escalation) and call script</li>
+        <li>Contractor and car repair playbooks and scripts</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>The four questions</h2>
+  <ol class="q">
+    <li><b>Does Virginia's debt settlement services licensing reach this?</b> The Commonwealth licenses debt settlement providers through the State Corporation Commission. Does negotiating a single consumer medical bill for a percentage of the reduction fall within that, and if so, what structure (flat fee only, licensed partner, exemption) is compliant? The flat-fee kit is assumed to be outside it; please confirm.</li>
+    <li><b>Do customer-sent templates raise unauthorized-practice concerns?</b> The kit's letters and scripts are used by the customer in their own name, with their facts filled in from their document. Is there language or a structure that keeps this clearly on the self-help side, and is anything in the drafts over the line?</li>
+    <li><b>Are the authorization and HIPAA release forms sound?</b> For the future done-for-you service: does the authorization adequately limit Counter's role (no payments, no settlements, no representation as the customer), and does the HIPAA release meet the required elements and state add-ons?</li>
+    <li><b>Do the terms and privacy policy hold up?</b> In particular the liability cap, the savings definition and charity-care exclusion, the consumer health data section, and Virginia-specific requirements for a home-based service business in Lynchburg (business license, any registration).</li>
+  </ol>
+
+  <div class="box"><b>What would help most.</b> A yes or no on question 1 with the reasoning, redlines on the four documents for questions 2 through 4, and a short list of anything I haven't asked about that a service like this typically gets wrong. All drafts are available in advance; I'm happy to meet in Charlottesville.</div>
+
+  <div class="foot">Counter · one-page brief for clinic intake · drafts available on request · this document is a description of a proposed business, not marketing material</div>
+</div>
