@@ -1,2 +1,5 @@
 # Local Netlify folder
 .netlify
+
+# Rendered clips: deployed to Netlify for Metricool, kept out of git (brand/video renders them)
+clips/
